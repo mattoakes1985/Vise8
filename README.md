@@ -16,6 +16,3 @@ IN (bypass) · MIX (parallel). Double-click a knob to reset. Window is resizable
     cmake --build build --target VISE8_VST3 --config Release
 Output: build/VISE8_artefacts/Release/VST3/VISE-8.vst3 (and AU/VISE-8.component on macOS, built with target VISE8_AU). The GitHub Actions workflow builds Windows/macOS/Linux.
 Offline checks: `cmake --build build --target VISE8Test` then run `VISE8Test <outdir>` (needs a display or xvfb for UI snapshots).
-
-## Licence note
-JUCE is AGPLv3 / commercial. Distributing this plugin means complying with AGPLv3 (publish source) or buying a JUCE licence.
