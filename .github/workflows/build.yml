@@ -3,6 +3,7 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
@@ -14,6 +15,7 @@ jobs:
       - name: Get JUCE
         run: git clone --depth 1 --branch 8.0.8 https://github.com/juce-framework/JUCE.git JUCE
       - name: Configure
+        if: runner.os != 'macOS'
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
       - name: Configure (macOS universal)
         if: runner.os == 'macOS'
@@ -33,9 +35,23 @@ jobs:
           cp -R build/VISE8_artefacts/Release/AU/VISE-8.component ~/Library/Audio/Plug-Ins/Components/
           killall -9 AudioComponentRegistrar || true
           auval -v aufx Vs08 Anvl
+      - name: Build installer (macOS .pkg)
+        if: runner.os == 'macOS'
+        run: ./installer/build_pkg.sh
+      - name: Build installer (Windows .exe)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\vise8.iss
       - uses: actions/upload-artifact@v4
         with:
-          name: VISE-8-${{ runner.os }}
+          name: VISE-8-${{ runner.os }}-plugin
           path: |
             build/VISE8_artefacts/Release/VST3/*
             build/VISE8_artefacts/Release/AU/*
+      - uses: actions/upload-artifact@v4
+        if: runner.os != 'Linux'
+        with:
+          name: VISE-8-${{ runner.os }}-INSTALLER
+          path: dist/*

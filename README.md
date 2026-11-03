@@ -16,3 +16,10 @@ IN (bypass) · MIX (parallel). Double-click a knob to reset. Window is resizable
     cmake --build build --target VISE8_VST3 --config Release
 Output: build/VISE8_artefacts/Release/VST3/VISE-8.vst3 (and AU/VISE-8.component on macOS, built with target VISE8_AU). The GitHub Actions workflow builds Windows/macOS/Linux.
 Offline checks: `cmake --build build --target VISE8Test` then run `VISE8Test <outdir>` (needs a display or xvfb for UI snapshots).
+
+## Installers (unsigned)
+CI produces `VISE-8-macOS-Installer.pkg` and `VISE-8-Windows-Installer.exe` (artifacts named `...-INSTALLER`).
+They are NOT code-signed or notarised, so other machines will show a warning:
+- macOS: right-click the .pkg > Open, or System Settings > Privacy & Security > "Open Anyway".
+- Windows: SmartScreen > "More info" > "Run anyway".
+Installs go to the system plugin folders (/Library/Audio/Plug-Ins/... on macOS, C:\Program Files\Common Files\VST3 on Windows).
